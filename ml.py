@@ -1,45 +1,35 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import matplotlib as plt
-st.header("       :red[Machine Learning]")
-page_choice = st.radio("Select an option for supervised learning",
-                       options=['classification',
-                                'Regression'])
-# st.set_page_config(page_title="machine learning", page_icon="🛠", layout='wide')
 
-st.header(":green[Upload your csv/excel]")
-filetype = st.radio("Choose type",options=['CSV','EXCEL'],horizontal=True)
-        # uploading section
+# Function to display the "My Profile" page
+def show_my_profile():
+    st.title("My Profile")
+    st.write("Please fill in your details below:")
 
-if filetype =='CSV':
-     uploaded_file = st.file_uploader("Upload",type=['csv'])
-     if uploaded_file:
-                # st.write(type(uploaded_file))
-                try:
-                    AADI_DATAFRAME = pd.read_csv(uploaded_file)
-                    st.session_state['load_data'] = {'data':AADI_DATAFRAME}
-                    st.checkbox("Done")
-                except Exception as e:
-                    st.error("Some error occurred")
-else:
-            assert filetype=='EXCEL'
-            uploaded_file = st.file_uploader("Upload",type=['xlsx','xlx'])
-            
-            if uploaded_file:
-                # Read Excel file
-                excel_data = pd.ExcelFile(uploaded_file)
+    # Use st.form to create a form for the user to fill in their details
+    with st.form(key='profile_form'):
+        name = st.text_input("Name:")
+        email = st.text_input("Email:")
+        address = st.text_area("Address:")
+        submit_button = st.form_submit_button(label='Submit')
 
-                # Get sheet names
-                sheet_names = excel_data.sheet_names
-                left,right = st.columns(2)
-                chosen_sheet = left.radio("Choose the sheet",
-                                        options=sheet_names)
-                def create_dataframe(excel,sheet):
-                    AADI_DATAFRAME = pd.read_excel(excel,sheet_name=sheet)
-                    st.session_state['load_data'] = {'data':AADI_DATAFRAME}
-                    
-                # right.markdown(":orange[Preview]")
-                # right.dataframe(pd.read_excel(excel_data,chosen_sheet).head())
-                right.button("Confirm Selection",on_click=create_dataframe,
-                            args=[excel_data,chosen_sheet])
+        # Process the form data after submission
+        if submit_button:
+            # Do something with the user's details, e.g., store in a database
+            # For now, we'll just display a success message
+            st.success("Profile details submitted successfully!")
+
+# Main function
+def main():
+    # Create a sidebar with some options
+    st.sidebar.title("Sidebar")
+    menu_selection = st.sidebar.radio("Menu:", ["Home", "My Profile"])
+
+    if menu_selection == "Home":
+        st.title("Welcome to My Website")
+        st.write("This is the home page.")
+    elif menu_selection == "My Profile":
+        # Show the "My Profile" page when the user clicks on "My Profile" in the sidebar
+        show_my_profile()
+
+if __name__ == "__main__":
+    main()
